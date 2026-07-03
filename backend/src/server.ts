@@ -2,6 +2,7 @@ import app from "./app"
 import { env } from "./config/env"
 import { connectMongoDB, disconnectMongoDB } from "./config/mongodb"
 import { connectNeo4j, closeNeo4j } from "./config/neo4j"
+import { AuthService } from "./services/auth.service"
 
 const PORT = env.PORT
 
@@ -12,9 +13,12 @@ const server = app.listen(PORT, async () => {
   // Attempt MongoDB Atlas connection on startup
   try {
     await connectMongoDB()
+    // Seed demo users once DB connection succeeds
+    await AuthService.seedDemoUsers()
   } catch (error) {
     console.warn("[MongoDB] Startup database connection failed. Server remains operational.")
   }
+
 
   // Attempt Neo4j AuraDB connectivity check on startup
   try {

@@ -2,11 +2,13 @@ import type { LucideIcon } from "lucide-react";
 import {
   AlertTriangle,
   ArrowRight,
+  ArrowDown,
   BarChart3,
   BookOpen,
   Brain,
   BrainCircuit,
   CheckCircle,
+  CheckCircle2,
   ClipboardList,
   Cog,
   Cpu,
@@ -27,6 +29,7 @@ import {
   UserCog,
   Users,
   Wrench,
+  X,
   Zap,
 } from "lucide-react";
 
@@ -35,11 +38,13 @@ export type { LucideIcon };
 export const Icons = {
   AlertTriangle,
   ArrowRight,
+  ArrowDown,
   BarChart3,
   BookOpen,
   Brain,
   BrainCircuit,
   CheckCircle,
+  CheckCircle2,
   ClipboardList,
   Cog,
   Cpu,
@@ -60,17 +65,20 @@ export const Icons = {
   UserCog,
   Users,
   Wrench,
+  X,
   Zap,
 } as const;
 
 export {
   AlertTriangle,
   ArrowRight,
+  ArrowDown,
   BarChart3,
   BookOpen,
   Brain,
   BrainCircuit,
   CheckCircle,
+  CheckCircle2,
   ClipboardList,
   Cog,
   Cpu,
@@ -91,5 +99,6 @@ export {
   UserCog,
   Users,
   Wrench,
+  X,
   Zap,
 };

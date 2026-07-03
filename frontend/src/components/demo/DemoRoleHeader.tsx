@@ -9,14 +9,15 @@ interface DemoRoleHeaderProps {
   description: string;
   responsibilities: string[];
   theme: DemoColorTheme;
+  estimatedWalkthroughTime?: string;
   onClose: () => void;
   titleId: string;
   descId: string;
 }
 
 /**
- * DemoRoleHeader – Displays the role badge, title, subtitle, responsibilities checklist,
- * and top-right close action inside the Explore Demo modal.
+ * DemoRoleHeader – Displays the role badge, estimated walkthrough time, title, subtitle,
+ * responsibilities checklist, and top-right close action inside the Explore Demo modal.
  */
 export const DemoRoleHeader: React.FC<DemoRoleHeaderProps> = React.memo(({
   badge,
@@ -25,6 +26,7 @@ export const DemoRoleHeader: React.FC<DemoRoleHeaderProps> = React.memo(({
   description,
   responsibilities,
   theme,
+  estimatedWalkthroughTime,
   onClose,
   titleId,
   descId,
@@ -40,10 +42,17 @@ export const DemoRoleHeader: React.FC<DemoRoleHeaderProps> = React.memo(({
       <X className="h-5 w-5" aria-hidden="true" />
     </button>
 
-    {/* Badge */}
-    <span className={`inline-flex items-center px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider border mb-4 ${theme.badgeBg} ${theme.badgeText}`}>
-      {badge}
-    </span>
+    {/* Badges Row */}
+    <div className="flex flex-wrap items-center gap-2.5 mb-4 pr-12">
+      <span className={`inline-flex items-center px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider border ${theme.badgeBg} ${theme.badgeText}`}>
+        {badge}
+      </span>
+      {estimatedWalkthroughTime && (
+        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-slate-800/80 text-slate-300 border border-slate-700">
+          Estimated Walkthrough Time: {estimatedWalkthroughTime}
+        </span>
+      )}
+    </div>
 
     {/* Title & Subtitle */}
     <h2 id={titleId} className="text-2xl sm:text-3xl font-extrabold text-slate-100 tracking-tight mb-2">

@@ -27,6 +27,7 @@ import {
   StatCard,
   TechBadge,
 } from "../components/landing";
+import { ModalManager } from "../components/demo";
 import type { DemoMetadata } from "../components/landing/HeroSection";
 
 /**
@@ -41,35 +42,32 @@ import type { DemoMetadata } from "../components/landing/HeroSection";
  *  6. Platform Statistics (id="stats")
  *  7. Technology Stack (id="technology")
  *  8. Footer (id="footer")
+ *
+ * Integrated with ModalManager (Sprint 1 - Step 4 Refactor) for coordinating dialog walkthroughs.
  */
 export const LandingPage: React.FC = () => {
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [activeDemoKey, setActiveDemoKey] = useState<string | null>(null);
 
   /**
-   * Explore Demo click handler – logs payload and displays temporary toast notification
-   * until Step 4 modal integration is implemented.
+   * Explore Demo click handler – triggers the ModalManager with the corresponding role key.
    */
   const handleExploreDemoClick = useCallback((metadata?: DemoMetadata) => {
-    console.log("Explore Demo clicked with payload:", metadata || { role: "general", title: "Platform Overview" });
-    setToastMessage("Explore Demo will be available in Step 4.");
-    setTimeout(() => {
-      setToastMessage(null);
-    }, 4000);
+    const targetKey = metadata?.role ? metadata.role.toLowerCase() : "general";
+    setActiveDemoKey(targetKey);
+  }, []);
+
+  const handleCloseDemoModal = useCallback(() => {
+    setActiveDemoKey(null);
   }, []);
 
   return (
     <div className="min-h-screen bg-[#0a0a0f] text-slate-100 overflow-x-hidden relative">
-      {/* Temporary Toast for Step 4 notification */}
-      {toastMessage && (
-        <div
-          role="status"
-          aria-live="polite"
-          className="fixed bottom-6 right-6 z-50 px-6 py-4 rounded-2xl bg-[#13131f] border border-primary/40 text-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.8)] flex items-center gap-3 animate-fade-in transition-all"
-        >
-          <div className="h-2 w-2 rounded-full bg-primary" aria-hidden="true" />
-          <span className="text-sm font-semibold">{toastMessage}</span>
-        </div>
-      )}
+      {/* ──── Architectural Modal Manager Suite ──── */}
+      <ModalManager
+        activeModal={activeDemoKey ? "exploreDemo" : null}
+        demoKey={activeDemoKey}
+        onClose={handleCloseDemoModal}
+      />
 
       {/* ──── 1. Hero Section ──── */}
       <HeroSection onExploreDemoClick={handleExploreDemoClick} />

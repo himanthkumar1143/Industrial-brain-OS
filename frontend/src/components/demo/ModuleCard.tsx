@@ -1,15 +1,10 @@
 import React from "react";
 import type { DemoModuleItem } from "../../constants/demo";
+import { StatusBadge } from "./StatusBadge";
 
 interface ModuleCardProps {
   module: DemoModuleItem;
 }
-
-const statusStyles: Record<string, string> = {
-  Available: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
-  "Coming Soon": "bg-amber-500/15 text-amber-400 border-amber-500/30",
-  "Future Sprint": "bg-cyan-500/15 text-cyan-400 border-cyan-500/30",
-};
 
 /**
  * ModuleCard – Displays an individual platform module with icon, name,
@@ -17,7 +12,6 @@ const statusStyles: Record<string, string> = {
  */
 export const ModuleCard: React.FC<ModuleCardProps> = React.memo(({ module }) => {
   const Icon = module.icon;
-  const badgeClass = statusStyles[module.status] || "bg-slate-800 text-slate-300 border-slate-700";
 
   return (
     <div className="flex flex-col justify-between p-4.5 rounded-xl bg-[#13131e] border border-border/60 hover:border-primary/40 transition-colors">
@@ -27,16 +21,7 @@ export const ModuleCard: React.FC<ModuleCardProps> = React.memo(({ module }) => 
           <div className="p-2 rounded-lg bg-primary/10 border border-primary/20 text-primary">
             <Icon className="h-5 w-5" aria-hidden="true" />
           </div>
-          <div className="flex items-center gap-1.5">
-            {module.sprintBadge && (
-              <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-slate-800/80 text-slate-300 border border-slate-700">
-                {module.sprintBadge}
-              </span>
-            )}
-            <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border ${badgeClass}`}>
-              {module.status}
-            </span>
-          </div>
+          <StatusBadge status={module.status} sprintBadge={module.sprintBadge} />
         </div>
 
         {/* Name */}

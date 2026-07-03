@@ -20,7 +20,7 @@ interface RoleCardProps {
 
 /**
  * RoleCard – Premium card showcasing a platform user role.
- * Displays role icon, description, highlights list, and two CTAs.
+ * Displays role icon, description, precision-aligned highlights list, and two CTAs.
  */
 export const RoleCard: React.FC<RoleCardProps> = React.memo(({
   icon: Icon,
@@ -53,11 +53,11 @@ export const RoleCard: React.FC<RoleCardProps> = React.memo(({
     <p className="text-sm text-slate-400 leading-relaxed mb-5">{description}</p>
 
     {/* Highlights */}
-    <ul className="space-y-2 mb-6 flex-1" aria-label={`${title} highlights`}>
+    <ul className="space-y-2.5 mb-6 flex-1" aria-label={`${title} highlights`}>
       {highlights.map((item) => (
-        <li key={item} className="flex items-start gap-2 text-sm text-slate-300">
-          <span className={`mt-1 h-1.5 w-1.5 rounded-full ${accentBg} border ${accentBorder} shrink-0`} aria-hidden="true" />
-          <span>{item}</span>
+        <li key={item} className="flex items-start gap-2.5 text-sm text-slate-300 leading-5">
+          <span className={`mt-[7px] h-1.5 w-1.5 rounded-full ${accentBg} border ${accentBorder} shrink-0`} aria-hidden="true" />
+          <span className="flex-1">{item}</span>
         </li>
       ))}
     </ul>

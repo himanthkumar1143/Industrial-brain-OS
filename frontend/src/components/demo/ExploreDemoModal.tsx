@@ -6,7 +6,7 @@ import { WorkflowTimeline } from "./WorkflowTimeline";
 import { ModuleGrid } from "./ModuleGrid";
 import { DemoFooter } from "./DemoFooter";
 
-interface ExploreDemoModalProps {
+export interface ExploreDemoModalProps {
   demoKey: string | null;
   onClose: () => void;
   onOpenCallback?: (key: string) => void;
@@ -24,9 +24,45 @@ export const ExploreDemoModal: React.FC<ExploreDemoModalProps> = React.memo(({
   onCloseCallback,
 }) => {
   const modalRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const triggerElementRef = useRef<HTMLElement | null>(null);
 
   const data = demoKey ? DEMO_DATA[demoKey] : null;
+
+  // Reset scroll position whenever opening or changing demo role
+  useEffect(() => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollTop = 0;
+    }
+  }, [demoKey]);
+
+  // Body scroll locking & background scroll chaining prevention
+  useEffect(() => {
+    if (!data) return;
+
+    // Save previous styles
+    const originalOverflow = document.body.style.overflow;
+    const originalPaddingRight = document.body.style.paddingRight;
+    const originalOverscroll = document.body.style.overscrollBehavior;
+
+    // Prevent horizontal layout shift when desktop scrollbar disappears
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+    if (scrollbarWidth > 0) {
+      const currentPadding = parseInt(window.getComputedStyle(document.body).paddingRight || "0", 10);
+      document.body.style.paddingRight = `${currentPadding + scrollbarWidth}px`;
+    }
+
+    // Freeze background document scrolling & prevent scroll propagation
+    document.body.style.overflow = "hidden";
+    document.body.style.overscrollBehavior = "none";
+
+    return () => {
+      // Restore styles without causing visual layout jumps
+      document.body.style.overflow = originalOverflow;
+      document.body.style.paddingRight = originalPaddingRight;
+      document.body.style.overscrollBehavior = originalOverscroll;
+    };
+  }, [data]);
 
   // ESC key closing and focus restoration
   useEffect(() => {
@@ -78,7 +114,7 @@ export const ExploreDemoModal: React.FC<ExploreDemoModalProps> = React.memo(({
         tabIndex={-1}
         className="relative w-full max-w-4xl max-h-[90vh] flex flex-col rounded-2xl bg-[#0f0f17] border border-border/80 shadow-[0_20px_70px_rgb(0,0,0,0.8)] overflow-hidden focus:outline-none animate-scale-up"
       >
-        <div className="overflow-y-auto flex-1 divide-y divide-border/40">
+        <div ref={scrollContainerRef} className="overflow-y-auto overscroll-contain flex-1 divide-y divide-border/40">
           {/* Header */}
           <DemoRoleHeader
             badge={data.badge}
@@ -87,6 +123,7 @@ export const ExploreDemoModal: React.FC<ExploreDemoModalProps> = React.memo(({
             description={data.description}
             responsibilities={data.responsibilities}
             theme={data.theme}
+            estimatedWalkthroughTime={data.estimatedWalkthroughTime}
             onClose={onClose}
             titleId={titleId}
             descId={descId}

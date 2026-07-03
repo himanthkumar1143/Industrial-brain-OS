@@ -11,7 +11,6 @@ import {
   LayoutDashboard,
   Users,
   UserCog,
-  HardHat,
   Cog,
   CheckCircle,
   Lock,
@@ -22,7 +21,7 @@ import {
   Rocket,
   Search,
   BrainCircuit,
-  AlertTriangle,
+  Globe,
 } from "./icons";
 
 export type DemoStatus = "Available" | "Coming Soon" | "Future Sprint";
@@ -75,6 +74,9 @@ export interface DemoDataPayload {
   interactiveTourUrl?: string;
   voiceNarrationUrl?: string;
   aiGuideEnabled?: boolean;
+  thumbnail?: string;
+  estimatedWalkthroughTime?: string;
+  searchPlaceholder?: string;
 }
 
 export const DEMO_DATA: Record<string, DemoDataPayload> = {
@@ -85,6 +87,7 @@ export const DEMO_DATA: Record<string, DemoDataPayload> = {
     subtitle: "The Unified AI Operating System for Industrial Knowledge",
     description:
       "Industrial Brain OS bridges the gap between retiring senior expertise and onboarding junior engineers through AI copilot intelligence and structured knowledge graphs.",
+    estimatedWalkthroughTime: "5 min walkthrough",
     responsibilities: [
       "Connects disparate industrial knowledge silos into a centralized enterprise repository",
       "Delivers role-specific interfaces for Junior Engineers, Senior Experts, and Administrators",
@@ -226,6 +229,7 @@ export const DEMO_DATA: Record<string, DemoDataPayload> = {
     subtitle: "Guided Troubleshooting & Accelerated Onboarding",
     description:
       "Designed for junior maintenance and process engineers to rapidly diagnose equipment issues using AI guidance without waiting for senior staff availability.",
+    estimatedWalkthroughTime: "3 min walkthrough",
     responsibilities: [
       "Query AI Copilot for step-by-step equipment resolution protocols",
       "Search verified standard operating procedures (SOPs) and safety manuals",
@@ -333,6 +337,7 @@ export const DEMO_DATA: Record<string, DemoDataPayload> = {
     subtitle: "Knowledge Validation & Decision Intelligence",
     description:
       "Empowers senior experts and reliability engineers to review AI-drafted insights, validate field procedures, and contribute decades of tribal wisdom into the permanent vault.",
+    estimatedWalkthroughTime: "4 min walkthrough",
     responsibilities: [
       "Review, verify, and approve junior engineer troubleshooting submissions",
       "Contribute expert tips, failure root causes, and audio/text wisdom into Expert Vault",
@@ -440,6 +445,7 @@ export const DEMO_DATA: Record<string, DemoDataPayload> = {
     subtitle: "Governance, Security & Enterprise Configuration",
     description:
       "Provides IT administrators and plant security officers full governance over user identities, access permissions, audit trails, and AI knowledge boundary rules.",
+    estimatedWalkthroughTime: "3 min walkthrough",
     responsibilities: [
       "Manage user accounts, department assignments, and role provisioning",
       "Configure Role-Based Access Control (RBAC) policies across plant zones",

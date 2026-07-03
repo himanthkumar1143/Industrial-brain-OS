@@ -30,6 +30,7 @@ export const WorkflowTimeline: React.FC<WorkflowTimelineProps> = React.memo(({
         <WorkflowStep
           key={step.step}
           step={step}
+          totalSteps={steps.length}
           theme={theme}
           isLast={index === steps.length - 1}
         />

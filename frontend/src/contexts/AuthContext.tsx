@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
+import type { ReactNode } from "react";
 import { loginApi, getMeApi } from "../api/auth";
 
 interface User {
@@ -29,7 +30,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         const data = await getMeApi(); // expects token in interceptor
         setUser(data.user);
         setToken(storedToken);
-      } catch (err) {
+      } catch {
         // Invalid token – clear
         localStorage.removeItem("token");
         localStorage.removeItem("user");
@@ -48,7 +49,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const login = async (email: string, password: string) => {
     const response = await loginApi(email, password);
-    const { token: receivedToken, user: loggedUser } = response.data;
+    const { token: receivedToken, user: loggedUser } = response;
     localStorage.setItem("token", receivedToken);
     localStorage.setItem("user", JSON.stringify(loggedUser));
     setToken(receivedToken);
@@ -70,6 +71,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
+// eslint-disable-next-line react/only-export-components
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {

@@ -1,11 +1,10 @@
 import React, { lazy, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
 import { PrivateRoute } from "../components/common/PrivateRoute";
-import { DashboardLayout } from "../layouts/DashboardLayout";
+import { DashboardLayout } from "../components/dashboard/DashboardLayout";
 
 /**
  * Lazy-loaded pages for code-splitting.
- * Each page is loaded asynchronously to optimize the initial bundle size.
  */
 const LandingPage = lazy(() =>
   import("../pages/LandingPage").then((m) => ({ default: m.LandingPage }))
@@ -13,8 +12,8 @@ const LandingPage = lazy(() =>
 const LoginPage = lazy(() =>
   import("../pages/LoginPage").then((m) => ({ default: m.LoginPage }))
 );
-const DashboardPage = lazy(() =>
-  import("../pages/DashboardPage").then((m) => ({ default: m.DashboardPage }))
+const DashboardHome = lazy(() =>
+  import("../pages/DashboardHome").then((m) => ({ default: m.DashboardHome }))
 );
 const ComingSoonPage = lazy(() =>
   import("../pages/ComingSoonPage").then((m) => ({ default: m.ComingSoonPage }))
@@ -28,7 +27,6 @@ const NotFoundPage = lazy(() =>
 
 /**
  * SuspenseFallback – Shown while lazy pages are loading.
- * Will be replaced by SkeletonLoader in Step 10.
  */
 const SuspenseFallback: React.FC = () => (
   <div className="flex items-center justify-center min-h-screen bg-[#0a0a0f] text-slate-400">
@@ -37,24 +35,7 @@ const SuspenseFallback: React.FC = () => (
 );
 
 /**
- * AppRoutes – Central route definitions for the entire application.
- *
- * Route structure:
- *   /                           → LandingPage          (public)
- *   /login/:role                → LoginPage            (public)
- *   /unauthorized               → UnauthorizedPage     (public)
- *   /dashboard                  → DashboardLayout      (protected)
- *     index                     → DashboardPage
- *     knowledge-repository      → ComingSoonPage
- *     ai-copilot                → ComingSoonPage
- *     knowledge-graph           → ComingSoonPage
- *     expert-vault              → ComingSoonPage
- *     decision-intelligence     → ComingSoonPage
- *     compliance                → ComingSoonPage
- *     review-center             → ComingSoonPage
- *     user-management           → ComingSoonPage
- *     settings                  → ComingSoonPage
- *   *                           → NotFoundPage         (catch-all)
+ * AppRoutes – Central route definitions for Industrial Brain OS.
  */
 export const AppRoutes: React.FC = () => (
   <Suspense fallback={<SuspenseFallback />}>
@@ -64,7 +45,7 @@ export const AppRoutes: React.FC = () => (
       <Route path="/login/:role" element={<LoginPage />} />
       <Route path="/unauthorized" element={<UnauthorizedPage />} />
 
-      {/* ── Protected Dashboard Routes ── */}
+      {/* ── Protected Dashboard Shell Routes ── */}
       <Route
         path="/dashboard"
         element={
@@ -73,19 +54,26 @@ export const AppRoutes: React.FC = () => (
           </PrivateRoute>
         }
       >
-        {/* Default dashboard index */}
-        <Route index element={<DashboardPage />} />
+        {/* Default dashboard command center */}
+        <Route index element={<DashboardHome />} />
 
-        {/* Future module placeholders */}
+        {/* Step 6 Enterprise Module Placeholders */}
+        <Route path="knowledge-graph" element={<ComingSoonPage />} />
+        <Route path="documents" element={<ComingSoonPage />} />
+        <Route path="chat" element={<ComingSoonPage />} />
+        <Route path="search" element={<ComingSoonPage />} />
+        <Route path="users" element={<ComingSoonPage />} />
+        <Route path="analytics" element={<ComingSoonPage />} />
+        <Route path="settings" element={<ComingSoonPage />} />
+
+        {/* Legacy / Step 5 Backward Compatibility Routes */}
         <Route path="knowledge-repository" element={<ComingSoonPage />} />
         <Route path="ai-copilot" element={<ComingSoonPage />} />
-        <Route path="knowledge-graph" element={<ComingSoonPage />} />
         <Route path="expert-vault" element={<ComingSoonPage />} />
         <Route path="decision-intelligence" element={<ComingSoonPage />} />
         <Route path="compliance" element={<ComingSoonPage />} />
         <Route path="review-center" element={<ComingSoonPage />} />
         <Route path="user-management" element={<ComingSoonPage />} />
-        <Route path="settings" element={<ComingSoonPage />} />
       </Route>
 
       {/* ── Catch-all 404 ── */}

@@ -86,8 +86,12 @@ export const HeroSection: React.FC<HeroSectionProps> = React.memo(({ onExploreDe
             />
             <CTAButton
               label="Login"
-              to="/login/junior"
-              state={{ role: "junior" }}
+              onClick={() => {
+                const rolesEl = document.getElementById("roles");
+                if (rolesEl) {
+                  rolesEl.scrollIntoView({ behavior: "smooth" });
+                }
+              }}
               variant="secondary"
               size="lg"
             />

@@ -14,6 +14,8 @@ export interface EnvConfig {
   NEO4J_USERNAME: string
   NEO4J_PASSWORD: string
   NODE_ENV: string
+  LOGIN_RATE_LIMIT_WINDOW_MS: number
+  LOGIN_RATE_LIMIT_MAX: number
 }
 
 const requiredEnvVars = [
@@ -50,5 +52,7 @@ export const env: EnvConfig = {
   NEO4J_URI: process.env.NEO4J_URI!,
   NEO4J_USERNAME: process.env.NEO4J_USERNAME!,
   NEO4J_PASSWORD: process.env.NEO4J_PASSWORD!,
-  NODE_ENV: process.env.NODE_ENV || "development"
+  NODE_ENV: process.env.NODE_ENV || "development",
+  LOGIN_RATE_LIMIT_WINDOW_MS: parseInt(process.env.LOGIN_RATE_LIMIT_WINDOW_MS || "60000", 10),
+  LOGIN_RATE_LIMIT_MAX: parseInt(process.env.LOGIN_RATE_LIMIT_MAX || "5", 10)
 }

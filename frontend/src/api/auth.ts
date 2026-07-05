@@ -7,11 +7,11 @@ export interface LoginResponse {
 }
 
 export async function loginApi(email: string, password: string): Promise<LoginResponse> {
-  const { data } = await client.post<LoginResponse>("/auth/login", { email, password });
-  return data;
+  const { data } = await client.post("/auth/login", { email, password });
+  return data.data ? { success: data.success, ...data.data } : data;
 }
 
 export async function getMeApi() {
   const { data } = await client.get("/auth/me");
-  return data;
+  return data.data ? { success: data.success, ...data.data } : data;
 }

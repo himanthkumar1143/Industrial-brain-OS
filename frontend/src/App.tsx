@@ -1,27 +1,32 @@
 import { BrowserRouter } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
+import { ToastProvider } from "./contexts/ToastContext";
 import { AppRoutes } from "./routes/AppRoutes";
 import { AuthInitializer } from "./components/common/AuthInitializer";
+import { ScrollToTop } from "./components/common/ScrollToTop";
 
 /**
  * App – Root application component.
  *
  * Wraps the entire app with:
- *  1. BrowserRouter  – client-side routing
- *  2. AuthProvider   – authentication context (user, token, login, logout)
- *  3. AuthInitializer – session restoration logic
- *  4. AppRoutes      – centralized route definitions
- *
- * Note: QueryClientProvider is configured in main.tsx (Sprint 0 pattern preserved).
+ *  1. BrowserRouter   – client-side routing
+ *  2. ScrollToTop     – global scroll restoration on navigation
+ *  3. ToastProvider   – centralized notification system
+ *  4. AuthProvider    – authentication context (user, token, login, logout)
+ *  5. AuthInitializer – session restoration logic
+ *  6. AppRoutes       – centralized route definitions
  */
 function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <AuthInitializer>
-          <AppRoutes />
-        </AuthInitializer>
-      </AuthProvider>
+      <ScrollToTop />
+      <ToastProvider>
+        <AuthProvider>
+          <AuthInitializer>
+            <AppRoutes />
+          </AuthInitializer>
+        </AuthProvider>
+      </ToastProvider>
     </BrowserRouter>
   );
 }

@@ -1,10 +1,6 @@
 {
   "name": "Industrial Brain OS",
   "short_name": "Brain OS",
-  "start_url": "/",
-  "display": "standalone",
-  "background_color": "#0a0a0f",
-  "theme_color": "#0a0a0f",
   "icons": [
     {
       "src": "/web-app-manifest-192x192.png",
@@ -18,5 +14,9 @@
       "type": "image/png",
       "purpose": "any"
     }
-  ]
+  ],
+  "theme_color": "#0a0a0f",
+  "background_color": "#0a0a0f",
+  "display": "standalone",
+  "start_url": "/"
 }

@@ -37,7 +37,7 @@ export class AuthService {
     const token = jwt.sign(
       { id: user._id, role: user.role },
       env.JWT_SECRET,
-      { expiresIn: env.JWT_EXPIRES_IN }
+      { expiresIn: env.JWT_EXPIRES_IN as any }
     )
 
     return {

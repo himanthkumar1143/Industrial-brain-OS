@@ -1,6 +1,6 @@
 import type React from "react";
 import type { ReactNode } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 
 type RoleRouteProps = {
@@ -10,10 +10,11 @@ type RoleRouteProps = {
 
 export const RoleRoute: React.FC<RoleRouteProps> = ({ allowedRoles, children }) => {
   const { user } = useAuth();
+  const location = useLocation();
 
   if (!user) {
-    // Not authenticated – redirect to landing/home
-    return <Navigate to="/" replace />;
+    // Not authenticated – redirect to landing page while preserving destination
+    return <Navigate to="/" state={{ from: location }} replace />;
   }
 
   if (!allowedRoles.includes(user.role)) {

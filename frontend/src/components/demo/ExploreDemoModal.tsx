@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import { DEMO_DATA } from "../../constants/demo";
 import { ModalOverlay } from "./ModalOverlay";
 import { DemoRoleHeader } from "./DemoRoleHeader";
@@ -27,14 +27,33 @@ export const ExploreDemoModal: React.FC<ExploreDemoModalProps> = React.memo(({
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const triggerElementRef = useRef<HTMLElement | null>(null);
 
+  const [isExiting, setIsExiting] = useState(false);
+  const exitTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   const data = demoKey ? DEMO_DATA[demoKey] : null;
 
-  // Reset scroll position whenever opening or changing demo role
+  // Reset scroll position and exiting state whenever opening or changing demo role
   useEffect(() => {
+    setIsExiting(false);
     if (scrollContainerRef.current) {
       scrollContainerRef.current.scrollTop = 0;
     }
   }, [demoKey]);
+
+  // Cleanup exit timer on unmount
+  useEffect(() => {
+    return () => {
+      if (exitTimerRef.current) clearTimeout(exitTimerRef.current);
+    };
+  }, []);
+
+  const handleClose = useCallback(() => {
+    if (isExiting) return;
+    setIsExiting(true);
+    exitTimerRef.current = setTimeout(() => {
+      onClose();
+    }, 200);
+  }, [isExiting, onClose]);
 
   // Body scroll locking & background scroll chaining prevention
   useEffect(() => {
@@ -82,7 +101,7 @@ export const ExploreDemoModal: React.FC<ExploreDemoModalProps> = React.memo(({
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         e.preventDefault();
-        onClose();
+        handleClose();
       }
     };
 
@@ -96,7 +115,7 @@ export const ExploreDemoModal: React.FC<ExploreDemoModalProps> = React.memo(({
         triggerElementRef.current.focus();
       }
     };
-  }, [data, onClose, onOpenCallback, onCloseCallback]);
+  }, [data, handleClose, onOpenCallback, onCloseCallback]);
 
   if (!data) return null;
 
@@ -104,7 +123,7 @@ export const ExploreDemoModal: React.FC<ExploreDemoModalProps> = React.memo(({
   const descId = "demo-modal-desc";
 
   return (
-    <ModalOverlay onClose={onClose}>
+    <ModalOverlay onClose={handleClose} isExiting={isExiting}>
       <div
         ref={modalRef}
         role="dialog"
@@ -112,7 +131,9 @@ export const ExploreDemoModal: React.FC<ExploreDemoModalProps> = React.memo(({
         aria-labelledby={titleId}
         aria-describedby={descId}
         tabIndex={-1}
-        className="relative w-full max-w-4xl max-h-[90vh] flex flex-col rounded-2xl bg-[#0f0f17] border border-border/80 shadow-[0_20px_70px_rgb(0,0,0,0.8)] overflow-hidden focus:outline-none animate-scale-up"
+        className={`relative w-full max-w-4xl max-h-[90vh] flex flex-col rounded-2xl bg-[#0f0f17] border border-border/80 shadow-[0_20px_70px_rgb(0,0,0,0.8)] overflow-hidden focus:outline-none transition-all duration-200 ${
+          isExiting ? "opacity-0 scale-95 pointer-events-none" : "animate-scale-up opacity-100 scale-100"
+        }`}
       >
         <div ref={scrollContainerRef} className="overflow-y-auto overscroll-contain flex-1 divide-y divide-border/40">
           {/* Header */}
@@ -124,7 +145,7 @@ export const ExploreDemoModal: React.FC<ExploreDemoModalProps> = React.memo(({
             responsibilities={data.responsibilities}
             theme={data.theme}
             estimatedWalkthroughTime={data.estimatedWalkthroughTime}
-            onClose={onClose}
+            onClose={handleClose}
             titleId={titleId}
             descId={descId}
           />
@@ -141,7 +162,7 @@ export const ExploreDemoModal: React.FC<ExploreDemoModalProps> = React.memo(({
           primaryLabel={data.primaryActionLabel}
           loginPath={data.loginPath}
           loginRoleState={data.loginRoleState}
-          onClose={onClose}
+          onClose={handleClose}
         />
       </div>
     </ModalOverlay>

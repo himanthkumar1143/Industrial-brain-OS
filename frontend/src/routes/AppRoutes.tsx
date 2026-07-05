@@ -1,7 +1,8 @@
 import React, { lazy, Suspense } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { PrivateRoute } from "../components/common/PrivateRoute";
 import { DashboardLayout } from "../components/dashboard/DashboardLayout";
+import { NotFoundState } from "../components/common/states/NotFoundState";
 
 /**
  * Lazy-loaded pages for code-splitting.
@@ -20,9 +21,6 @@ const ComingSoonPage = lazy(() =>
 );
 const UnauthorizedPage = lazy(() =>
   import("../pages/UnauthorizedPage").then((m) => ({ default: m.UnauthorizedPage }))
-);
-const NotFoundPage = lazy(() =>
-  import("../pages/NotFoundPage").then((m) => ({ default: m.NotFoundPage }))
 );
 
 /**
@@ -74,10 +72,14 @@ export const AppRoutes: React.FC = () => (
         <Route path="compliance" element={<ComingSoonPage />} />
         <Route path="review-center" element={<ComingSoonPage />} />
         <Route path="user-management" element={<ComingSoonPage />} />
+
+        {/* Step 7 Enterprise UI States Framework 404 Catch-All within Dashboard Shell */}
+        <Route path="*" element={<NotFoundState />} />
       </Route>
 
-      {/* ── Catch-all 404 ── */}
-      <Route path="*" element={<NotFoundPage />} />
+      {/* ── Catch-all Public Route (Redirects to Landing Page) ── */}
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   </Suspense>
 );
+

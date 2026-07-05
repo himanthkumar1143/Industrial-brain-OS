@@ -1,11 +1,13 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Sparkles, ArrowRight } from "lucide-react";
+import { Sparkles, ArrowRight, LayoutDashboard } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { NAVIGATION_CONFIG } from "../constants/navigation";
 import { ROLE_BADGES } from "../constants/auth";
+import { EMPTY_MESSAGES } from "../constants/uiStates";
 import { PageContainer } from "../components/dashboard/PageContainer";
 import { PageHeader } from "../components/dashboard/PageHeader";
+import { EmptyState } from "../components/common/states/EmptyState";
 
 /**
  * DashboardHome – Enterprise landing view for authenticated users.
@@ -26,6 +28,7 @@ export const DashboardHome: React.FC = React.memo(() => {
   ];
 
   return (
+    
     <PageContainer>
       {/* Page Header driven by centralized config */}
       <PageHeader
@@ -100,8 +103,32 @@ export const DashboardHome: React.FC = React.memo(() => {
           })}
         </div>
       </div>
+
+      {/* ── Dashboard Widgets Section (Step 7 Enterprise UI States Framework) ── */}
+      <div className="space-y-4 pt-6">
+        <div className="flex items-center justify-between border-t border-border/60 pt-6">
+          <div className="space-y-0.5">
+            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+              Dashboard Widgets
+            </h3>
+            <p className="text-xs text-slate-500">
+              Live telemetry, recent activity logs, and AI suggestions
+            </p>
+          </div>
+          <span className="text-xs text-slate-500 font-medium">Future Sprints</span>
+        </div>
+
+        <EmptyState
+          icon={LayoutDashboard}
+          title={EMPTY_MESSAGES.widgets.title}
+          description={EMPTY_MESSAGES.widgets.description}
+        />
+      </div>
     </PageContainer>
+  
+    
   );
 });
 
 DashboardHome.displayName = "DashboardHome";
+

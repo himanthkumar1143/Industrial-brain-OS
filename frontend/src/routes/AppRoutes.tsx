@@ -4,7 +4,6 @@ import { PrivateRoute } from "../components/common/PrivateRoute";
 import { RoleRoute } from "../components/common/RoleRoute";
 import { GuestRoute } from "../components/common/GuestRoute";
 import { DashboardLayout } from "../components/dashboard/DashboardLayout";
-import { NotFoundState } from "../components/common/states/NotFoundState";
 import { LoadingState } from "../components/common/states/LoadingState";
 
 /**
@@ -30,6 +29,9 @@ const ForbiddenPage = lazy(() =>
 );
 const SessionExpiredPage = lazy(() =>
   import("../pages/SessionExpiredPage").then((m) => ({ default: m.SessionExpiredPage }))
+);
+const NotFoundPage = lazy(() =>
+  import("../pages/NotFoundPage").then((m) => ({ default: m.NotFoundPage }))
 );
 
 /**
@@ -112,8 +114,8 @@ export const AppRoutes: React.FC = () => (
         <Route path="decision-intelligence" element={<ComingSoonPage />} />
         <Route path="compliance" element={<ComingSoonPage />} />
 
-        {/* Step 7 Enterprise UI States Framework 404 Catch-All within Dashboard Shell */}
-        <Route path="*" element={<NotFoundState />} />
+        {/* Step 10 Enterprise Error Pages 404 Catch-All within Dashboard Shell */}
+        <Route path="*" element={<NotFoundPage />} />
       </Route>
 
       {/* ── Catch-all Public Route (Redirects to Landing Page) ── */}

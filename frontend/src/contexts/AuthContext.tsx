@@ -60,12 +60,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         } else {
           throw new Error("Invalid session payload");
         }
-      } catch (error: any) {
+      } catch (error: unknown) {
         // Invalid or expired token – clear all storage
         clearStorage();
         setUser(null);
         setToken(null);
-        if (error?.response?.status === 401) {
+        const err = error as { response?: { status?: number } };
+        if (err?.response?.status === 401) {
           setIsExpired(true);
         }
       }

@@ -108,7 +108,14 @@ export const ErrorState: React.FC<ErrorStateProps> = React.memo(({
   const resolvedPrimary = resolveAction(primaryAction, true);
   const resolvedSecondary = resolveAction(secondaryAction, false);
 
-  const renderButton = (action: any, isPrimary: boolean) => {
+  type ResolvedAction = {
+    label: string;
+    onClick?: () => void;
+    href?: string;
+    icon?: React.ComponentType<{ className?: string }>;
+  } | null;
+
+  const renderButton = (action: ResolvedAction, isPrimary: boolean) => {
     if (!action) return null;
     const ActionIcon = action.icon;
     const baseClass = "inline-flex items-center gap-2 px-6 py-2.5 rounded-xl font-semibold text-xs transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary shadow-md";

@@ -100,11 +100,16 @@ export const LoginForm: React.FC<LoginFormProps> = ({
         // Preserve intended destination after login
         const destination = (location.state as any)?.from?.pathname || "/dashboard";
         navigate(destination, { replace: true });
-      } catch (error: any) {
+      } catch (error: unknown) {
         // Differentiate network & HTTP errors
-        const status = error?.response?.status;
-        const code = error?.code;
-        const msg = error?.message?.toLowerCase() || "";
+        const err = error as {
+          response?: { status?: number; data?: { message?: string } };
+          code?: string;
+          message?: string;
+        };
+        const status = err?.response?.status;
+        const code = err?.code;
+        const msg = err?.message?.toLowerCase() || "";
 
         if (!navigator.onLine || code === "ERR_NETWORK" || msg.includes("network error") || msg.includes("offline")) {
           toast.error("Internet connection unavailable. Please check your network and try again.", "Offline");
@@ -117,11 +122,11 @@ export const LoginForm: React.FC<LoginFormProps> = ({
             "Too many login attempts from this IP. Please try again after 1 minute.",
             "Rate Limit Exceeded"
           );
-        } else if (status >= 500) {
+        } else if (status !== undefined && status >= 500) {
           toast.error("Internal server error. Please try again later.", "Server Error");
         } else {
           toast.error(
-            error?.response?.data?.message || "Something went wrong. Please try again.",
+            err?.response?.data?.message || "Something went wrong. Please try again.",
             "Login Error"
           );
         }

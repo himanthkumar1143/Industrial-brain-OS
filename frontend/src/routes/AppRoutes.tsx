@@ -1,8 +1,11 @@
 import React, { lazy, Suspense } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { PrivateRoute } from "../components/common/PrivateRoute";
+import { RoleRoute } from "../components/common/RoleRoute";
+import { GuestRoute } from "../components/common/GuestRoute";
 import { DashboardLayout } from "../components/dashboard/DashboardLayout";
 import { NotFoundState } from "../components/common/states/NotFoundState";
+import { LoadingState } from "../components/common/states/LoadingState";
 
 /**
  * Lazy-loaded pages for code-splitting.
@@ -22,14 +25,18 @@ const ComingSoonPage = lazy(() =>
 const UnauthorizedPage = lazy(() =>
   import("../pages/UnauthorizedPage").then((m) => ({ default: m.UnauthorizedPage }))
 );
+const ForbiddenPage = lazy(() =>
+  import("../pages/ForbiddenPage").then((m) => ({ default: m.ForbiddenPage }))
+);
+const SessionExpiredPage = lazy(() =>
+  import("../pages/SessionExpiredPage").then((m) => ({ default: m.SessionExpiredPage }))
+);
 
 /**
- * SuspenseFallback – Shown while lazy pages are loading.
+ * SuspenseFallback – Shown while lazy pages are loading. Reuses Step 7 LoadingState.
  */
 const SuspenseFallback: React.FC = () => (
-  <div className="flex items-center justify-center min-h-screen bg-[#0a0a0f] text-slate-400">
-    <div className="animate-pulse text-sm font-medium">Loading...</div>
-  </div>
+  <LoadingState fullPage size="medium" title="Loading module..." description="Retrieving code bundle and assets." />
 );
 
 /**
@@ -38,10 +45,12 @@ const SuspenseFallback: React.FC = () => (
 export const AppRoutes: React.FC = () => (
   <Suspense fallback={<SuspenseFallback />}>
     <Routes>
-      {/* ── Public Routes ── */}
-      <Route path="/" element={<LandingPage />} />
-      <Route path="/login/:role" element={<LoginPage />} />
+      {/* ── Public & Guest Routes ── */}
+      <Route path="/" element={<GuestRoute><LandingPage /></GuestRoute>} />
+      <Route path="/login/:role" element={<GuestRoute><LoginPage /></GuestRoute>} />
       <Route path="/unauthorized" element={<UnauthorizedPage />} />
+      <Route path="/forbidden" element={<ForbiddenPage />} />
+      <Route path="/session-expired" element={<SessionExpiredPage />} />
 
       {/* ── Protected Dashboard Shell Routes ── */}
       <Route
@@ -60,9 +69,41 @@ export const AppRoutes: React.FC = () => (
         <Route path="documents" element={<ComingSoonPage />} />
         <Route path="chat" element={<ComingSoonPage />} />
         <Route path="search" element={<ComingSoonPage />} />
-        <Route path="users" element={<ComingSoonPage />} />
         <Route path="analytics" element={<ComingSoonPage />} />
-        <Route path="settings" element={<ComingSoonPage />} />
+
+        {/* RBAC Protected Administrative & Senior Modules */}
+        <Route
+          path="users"
+          element={
+            <RoleRoute allowedRoles={["admin"]}>
+              <ComingSoonPage />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="settings"
+          element={
+            <RoleRoute allowedRoles={["admin"]}>
+              <ComingSoonPage />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="review-center"
+          element={
+            <RoleRoute allowedRoles={["senior", "admin"]}>
+              <ComingSoonPage />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="user-management"
+          element={
+            <RoleRoute allowedRoles={["admin"]}>
+              <ComingSoonPage />
+            </RoleRoute>
+          }
+        />
 
         {/* Legacy / Step 5 Backward Compatibility Routes */}
         <Route path="knowledge-repository" element={<ComingSoonPage />} />
@@ -70,8 +111,6 @@ export const AppRoutes: React.FC = () => (
         <Route path="expert-vault" element={<ComingSoonPage />} />
         <Route path="decision-intelligence" element={<ComingSoonPage />} />
         <Route path="compliance" element={<ComingSoonPage />} />
-        <Route path="review-center" element={<ComingSoonPage />} />
-        <Route path="user-management" element={<ComingSoonPage />} />
 
         {/* Step 7 Enterprise UI States Framework 404 Catch-All within Dashboard Shell */}
         <Route path="*" element={<NotFoundState />} />
@@ -82,4 +121,3 @@ export const AppRoutes: React.FC = () => (
     </Routes>
   </Suspense>
 );
-

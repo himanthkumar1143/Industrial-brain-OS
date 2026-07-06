@@ -4,3 +4,5 @@ export * from "./ErrorState";
 export * from "./PageSkeleton";
 export * from "./NotFoundState";
 export * from "./DataState";
+export * from "./AuthorizationState";
+

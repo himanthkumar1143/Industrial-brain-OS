@@ -7,12 +7,13 @@ import { ROLE_BADGES } from "../../constants/auth";
 /**
  * UserMenu – Enterprise user profile control and session telemetry display.
  * Features 3-tier avatar fallback (image -> initials -> generic icon), centralized role badge styling,
- * remembered vs. temporary session status, and clean logout execution.
+ * remembered vs. temporary session status, and clean logout execution with graceful transition.
  */
 export const UserMenu: React.FC = React.memo(() => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isLoggingOut, setIsLoggingOut] = useState<boolean>(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const toggleDropdown = useCallback(() => {
@@ -24,6 +25,7 @@ export const UserMenu: React.FC = React.memo(() => {
   }, []);
 
   const handleLogout = useCallback(() => {
+    setIsLoggingOut(true);
     closeDropdown();
     logout();
     navigate("/", { replace: true });
@@ -189,11 +191,14 @@ export const UserMenu: React.FC = React.memo(() => {
             <button
               type="button"
               onClick={handleLogout}
+              disabled={isLoggingOut}
               role="menuitem"
-              className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-rose-400 hover:bg-rose-500/10 hover:text-rose-300 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-500"
+              className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-rose-400 hover:bg-rose-500/10 hover:text-rose-300 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-500 ${
+                isLoggingOut ? "opacity-50 cursor-wait" : ""
+              }`}
             >
-              <LogOut className="h-4 w-4 shrink-0" />
-              <span>Sign Out of Industrial Brain OS</span>
+              <LogOut className={`h-4 w-4 shrink-0 ${isLoggingOut ? "animate-spin" : ""}`} />
+              <span>{isLoggingOut ? "Signing Out..." : "Sign Out of Industrial Brain OS"}</span>
             </button>
           </div>
         </div>

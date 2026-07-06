@@ -2,24 +2,32 @@ import type React from "react";
 import type { ReactNode } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
+import { hasRoleAccess } from "../../constants/navigation";
+import type { UserRole } from "../../types/navigation";
 
 type RoleRouteProps = {
-  allowedRoles: ("junior" | "senior" | "admin")[ ];
+  allowedRoles: UserRole[];
   children: ReactNode;
 };
 
+/**
+ * RoleRoute – UI-agnostic guard enforcing RBAC security boundaries.
+ * Verifies role clearance and redirects unauthorized access to /forbidden.
+ */
 export const RoleRoute: React.FC<RoleRouteProps> = ({ allowedRoles, children }) => {
-  const { user } = useAuth();
+  const { user, isExpired } = useAuth();
   const location = useLocation();
 
   if (!user) {
-    // Not authenticated – redirect to landing page while preserving destination
-    return <Navigate to="/" state={{ from: location }} replace />;
+    if (isExpired) {
+      return <Navigate to="/session-expired" state={{ from: location }} replace />;
+    }
+    return <Navigate to="/login/admin" state={{ from: location }} replace />;
   }
 
-  if (!allowedRoles.includes(user.role)) {
-    // Authenticated but role not permitted – redirect to unauthorized page
-    return <Navigate to="/unauthorized" replace />;
+  if (!hasRoleAccess(user.role, allowedRoles)) {
+    // Authenticated but role not permitted – redirect to forbidden page with role context
+    return <Navigate to="/forbidden" state={{ from: location, requiredRoles: allowedRoles }} replace />;
   }
 
   return <>{children}</>;

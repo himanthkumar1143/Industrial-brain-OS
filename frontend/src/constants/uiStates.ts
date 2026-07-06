@@ -49,6 +49,10 @@ export const LOADING_MESSAGES = {
     title: "Loading Configuration...",
     description: "Retrieving system preferences and security policies.",
   },
+  auth: {
+    title: "Verifying Credentials...",
+    description: "Validating secure JWT session and enterprise RBAC permissions.",
+  },
 } as const;
 
 export const EMPTY_MESSAGES = {
@@ -174,3 +178,47 @@ export const NOT_FOUND_MESSAGES = {
     description: "The specified dashboard widget is not registered.",
   },
 } as const;
+
+export const AUTHORIZATION_MESSAGES = {
+  unauthorized: {
+    title: "401 – Authentication Required",
+    subtitle: "Active Session Needed",
+    description: "You must be signed in with a valid enterprise engineering account to access this operational resource.",
+  },
+  forbidden: {
+    title: "403 – Access Forbidden",
+    subtitle: "Insufficient RBAC Privileges",
+    description: "Your current engineering role does not have permission to view or execute commands in this administrative boundary.",
+  },
+  expired: {
+    title: "Session Expired",
+    subtitle: "Security Token Timed Out",
+    description: "Your secure engineering session has expired due to inactivity or TLS token timeout. Please re-authenticate to continue.",
+  },
+  denied: {
+    title: "Access Denied",
+    subtitle: "Permission Boundary Exceeded",
+    description: "You do not have the required role or security clearance to interact with this module.",
+  },
+  permissionRequired: {
+    title: "Permission Required",
+    subtitle: "Elevated Clearance Needed",
+    description: "This action requires higher role authorization within Industrial Brain OS.",
+  },
+  adminOnly: {
+    title: "Administrator Only",
+    subtitle: "System Command Center",
+    description: "Only enterprise administrators can configure global system policies and user governance.",
+  },
+  engineerOnly: {
+    title: "Engineer Only",
+    subtitle: "Operations & Analytics Portal",
+    description: "This module is reserved for authenticated engineering personnel performing operational monitoring.",
+  },
+  seniorOnly: {
+    title: "Senior Engineer Only",
+    subtitle: "Review & Architecture Governance",
+    description: "Only senior engineers or administrators can validate and approve technical knowledge contributions.",
+  },
+} as const;
+

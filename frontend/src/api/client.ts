@@ -46,6 +46,7 @@ client.interceptors.response.use(
         sessionStorage.removeItem("token");
         sessionStorage.removeItem("user");
         delete client.defaults.headers.common["Authorization"];
+        window.dispatchEvent(new Event("auth:expired"));
         window.dispatchEvent(new Event("auth:logout"));
       }
     }

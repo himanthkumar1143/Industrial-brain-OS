@@ -239,3 +239,14 @@ export const getNavItemByPath = (pathname: string): NavItemConfig | undefined =>
 
   return undefined;
 };
+
+/**
+ * hasRoleAccess – Helper utility to evaluate whether a user role has access to a route or module.
+ * Eliminates duplicate array inclusion logic across sidebar and route guards.
+ */
+export const hasRoleAccess = (userRole?: string, allowedRoles?: string[]): boolean => {
+  if (!allowedRoles || allowedRoles.length === 0) return true;
+  if (!userRole) return false;
+  return allowedRoles.includes(userRole);
+};
+

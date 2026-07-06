@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useMemo } from "react";
 import type { NavSectionConfig } from "../../types/navigation";
 import { SidebarItem } from "./SidebarItem";
 import { useSidebar } from "../../contexts/SidebarContext";
+import { useAuth } from "../../contexts/AuthContext";
+import { hasRoleAccess } from "../../constants/navigation";
 
 export interface SidebarSectionProps {
   section: NavSectionConfig;
@@ -10,9 +12,21 @@ export interface SidebarSectionProps {
 /**
  * SidebarSection – Grouping container for sidebar navigation items.
  * Renders uppercase section headers or subtle separator dividers when collapsed.
+ * Enforces dynamic RBAC UX filtering: hides unauthorized items and empty section headers.
  */
 export const SidebarSection: React.FC<SidebarSectionProps> = React.memo(({ section }) => {
   const { isCollapsed } = useSidebar();
+  const { user } = useAuth();
+
+  // Filter items based on active user's role (UX optimization – security enforced in RoleRoute)
+  const visibleItems = useMemo(() => {
+    return section.items.filter((item) => hasRoleAccess(user?.role, item.allowedRoles));
+  }, [section.items, user?.role]);
+
+  // If all items in this section are filtered out for the current role, hide the section entirely
+  if (visibleItems.length === 0) {
+    return null;
+  }
 
   return (
     <div className="space-y-1.5">
@@ -26,7 +40,7 @@ export const SidebarSection: React.FC<SidebarSectionProps> = React.memo(({ secti
         </div>
       )}
       <ul className="space-y-1 m-0 p-0">
-        {section.items.map((item) => (
+        {visibleItems.map((item) => (
           <SidebarItem key={item.id} item={item} />
         ))}
       </ul>

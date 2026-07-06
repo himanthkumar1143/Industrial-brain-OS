@@ -21,8 +21,10 @@ export interface AuthContextProps {
   user: User | null;
   token: string | null;
   isLoading: boolean;
+  isExpired: boolean;
   login: (email: string, password: string, rememberMe?: boolean) => Promise<void>;
   logout: () => void;
+  clearExpired: () => void;
   // Future-ready architectural contracts (extensible without breaking existing callers)
   sessionMeta?: AuthSessionMeta;
   loginWithOAuth?: (provider: AuthProviderType) => Promise<void>;
@@ -35,6 +37,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isExpired, setIsExpired] = useState<boolean>(false);
 
   const clearStorage = useCallback(() => {
     localStorage.removeItem("token");
@@ -57,11 +60,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         } else {
           throw new Error("Invalid session payload");
         }
-      } catch {
+      } catch (error: any) {
         // Invalid or expired token – clear all storage
         clearStorage();
         setUser(null);
         setToken(null);
+        if (error?.response?.status === 401) {
+          setIsExpired(true);
+        }
       }
     }
     setIsLoading(false);
@@ -74,11 +80,35 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       delete client.defaults.headers.common["Authorization"];
       setUser(null);
       setToken(null);
+      setIsExpired(false);
+    };
+
+    const handleExpiredEvent = () => {
+      delete client.defaults.headers.common["Authorization"];
+      setUser(null);
+      setToken(null);
+      setIsExpired(true);
+    };
+
+    const handleStorageChange = (event: StorageEvent) => {
+      // Multi-tab synchronization
+      if ((event.key === "token" || event.key === "user") && !event.newValue) {
+        delete client.defaults.headers.common["Authorization"];
+        setUser(null);
+        setToken(null);
+        setIsExpired(false);
+      } else if (event.key === "token" && event.newValue) {
+        restoreSession();
+      }
     };
 
     window.addEventListener("auth:logout", handleLogoutEvent);
+    window.addEventListener("auth:expired", handleExpiredEvent);
+    window.addEventListener("storage", handleStorageChange);
     return () => {
       window.removeEventListener("auth:logout", handleLogoutEvent);
+      window.removeEventListener("auth:expired", handleExpiredEvent);
+      window.removeEventListener("storage", handleStorageChange);
     };
   }, [restoreSession]);
 
@@ -102,17 +132,23 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     client.defaults.headers.common["Authorization"] = `Bearer ${receivedToken}`;
     setToken(receivedToken);
     setUser(loggedUser);
+    setIsExpired(false);
   }, []);
 
   const logout = useCallback(() => {
     clearStorage();
     setUser(null);
     setToken(null);
+    setIsExpired(false);
     window.dispatchEvent(new Event("auth:logout"));
   }, [clearStorage]);
 
+  const clearExpired = useCallback(() => {
+    setIsExpired(false);
+  }, []);
+
   return (
-    <AuthContext.Provider value={{ user, token, isLoading, login, logout }}>
+    <AuthContext.Provider value={{ user, token, isLoading, isExpired, login, logout, clearExpired }}>
       {children}
     </AuthContext.Provider>
   );

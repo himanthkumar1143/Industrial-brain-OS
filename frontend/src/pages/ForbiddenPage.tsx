@@ -2,13 +2,13 @@ import React from "react";
 import { AuthorizationState } from "../components/common/states/AuthorizationState";
 
 /**
- * UnauthorizedPage – Thin wrapper around AuthorizationState for 401 Unauthorized errors.
+ * ForbiddenPage – Thin wrapper around AuthorizationState for 403 Forbidden errors.
  * Enforces zero duplication and reuses centralized strings.
  */
-export const UnauthorizedPage: React.FC = React.memo(() => (
+export const ForbiddenPage: React.FC = React.memo(() => (
   <div className="min-h-screen w-full bg-[#0a0a0f] text-slate-100 flex items-center justify-center p-4">
-    <AuthorizationState variant="unauthorized" primaryAction="login" />
+    <AuthorizationState variant="forbidden" primaryAction="dashboard" secondaryAction="back" />
   </div>
 ));
 
-UnauthorizedPage.displayName = "UnauthorizedPage";
+ForbiddenPage.displayName = "ForbiddenPage";

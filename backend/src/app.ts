@@ -16,7 +16,8 @@ app.use(
   cors({
     origin: "*", // Can be configured with allowed domain lists in production
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"]
+    allowedHeaders: ["Content-Type", "Authorization", "X-Request-ID"]
+
   })
 )
 

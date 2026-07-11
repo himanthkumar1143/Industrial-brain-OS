@@ -192,7 +192,32 @@ All endpoint paths must extend from the base version path prefix `/api/v1`.
 - **Sprint 4 (GraphRAG & Copilot)**: Combining Vector Search + Knowledge Graph schemas with Google Gemini API for context-enriched RAG engineering support.
 
 ---
+# Changelog
 
+## v2.0.0 - Sprint 2 Final
+
+### Added
+- Knowledge Hub
+- Cloudinary integration
+- Document versioning
+- Approval workflow
+- Audit logging
+- Soft deletion
+- Role-based document visibility
+- Enterprise navigation
+
+### Improved
+- Login redirection
+- Session restoration
+- Office document preview handling
+- Explore Demo synchronization
+
+### Fixed
+- Logout redirect regression
+- Version upload permissions
+- Office preview UX
+- Dashboard navigation consistency
+- 
 ## License
 
 This project is licensed under the MIT License - see the LICENSE placeholder for details.
